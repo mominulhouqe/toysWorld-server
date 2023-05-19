@@ -33,9 +33,16 @@ async function run() {
 
     const addToyCollection = client.db("addedToys").collection("addedToys");
 
-    
+    // my Toys list
+    app.get("/addToys", async (req, res) => {
+      let query = {};
+      if (req.query?.email) {
+        query = { sellerEmail: req.query.email };
+      }
+      const result = await addToyCollection.find(query).toArray();
+      res.send(result);
+    });
 
-    
     // send data from db to client
     app.get("/addToys", async (req, res) => {
       const cursor = addToyCollection.find().limit(20);
@@ -46,7 +53,7 @@ async function run() {
     // getData from input field and insert db
     app.post("/addToys", async (req, res) => {
       const addedToys = req.body;
-     
+
       const result = await addToyCollection.insertOne(addedToys);
       res.send(result);
     });
