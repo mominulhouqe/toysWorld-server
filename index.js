@@ -1,22 +1,17 @@
-const express = require('express')
-const app = express()
-const port = 5000
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const cors = require('cors')
+const express = require("express");
+const app = express();
+const port = 5000;
+const { MongoClient, ServerApiVersion } = require("mongodb");
+const cors = require("cors");
 require("dotenv").config();
 
-
 //midleware
-app.use(cors()) 
+app.use(cors());
 app.use(express.json());
 
-
-
-
-
-app.get('/', (req, res) => {
-  res.send('Server is Runnig bro!')
-})
+app.get("/", (req, res) => {
+  res.send("Server is Runnig bro!");
+});
 
 console.log();
 
@@ -28,13 +23,33 @@ const client = new MongoClient(uri, {
     version: ServerApiVersion.v1,
     strict: true,
     deprecationErrors: true,
-  }
+  },
 });
 
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
+    const addToyCollection = client.db("addedToys").collection("addedToys");
+
+    
+
+    
+    // send data from db to client
+    app.get("/addToys", async (req, res) => {
+      const cursor = addToyCollection.find().limit(20);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    // getData from input field and insert db
+    app.post("/addToys", async (req, res) => {
+      const addedToys = req.body;
+     
+      const result = await addToyCollection.insertOne(addedToys);
+      res.send(result);
+    });
 
     // const serviceCollection = client.db('carDoctor').collection('services');
     // const bookingCollection = client.db('carDoctor').collection('bookings');
@@ -58,8 +73,7 @@ async function run() {
     //     res.send(result);
     // })
 
-
-    // // bookings 
+    // // bookings
     // app.get('/bookings', async (req, res) => {
     //     console.log(req.query.email);
     //     let query = {};
@@ -98,11 +112,11 @@ async function run() {
     //     res.send(result);
     // })
 
-
-
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    console.log(
+      "Pinged your deployment. You successfully connected to MongoDB!"
+    );
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
@@ -110,9 +124,6 @@ async function run() {
 }
 run().catch(console.dir);
 
-
-
-
 app.listen(port, () => {
-  console.log(`Social media Server Run on port ${port}`)
-})
+  console.log(`Social media Server Run on port ${port}`);
+});
