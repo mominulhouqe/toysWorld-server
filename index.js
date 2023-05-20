@@ -62,10 +62,10 @@ async function run() {
       res.send(result);
     });
 
-    // Search from db
-    const indexKeys = { name: 1 };
-    const indexOptions = { names: "toyZone" };
-    const result = await addToyCollection.createIndex(indexKeys, indexOptions);
+    // // Search from db
+    // const indexKeys = { name: 1 };
+    // const indexOptions = { names: "toyZone" };
+    // const result = await addToyCollection.createIndex(indexKeys, indexOptions);
     app.get("/searchByToyName/:text", async (req, res) => {
       const searchText = req.params.text;
       const result = await addToyCollection
@@ -75,6 +75,22 @@ async function run() {
         .toArray();
       res.send(result);
     });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
