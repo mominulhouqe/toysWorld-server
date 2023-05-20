@@ -61,13 +61,14 @@ app.get("/addToys", async (req, res) => {
   if (req.query?.email) {
     query = { sellerEmail: req.query.email };
   }
-  const result = await addToyCollection.find(query).toArray();
+  const result = await addToyCollection.find(query).sort({createdAt : -1}).toArray();
   res.send(result);
 });
 
 // Insert a new toy
 app.post("/addToys", async (req, res) => {
   const addedToy = req.body;
+  addedToy.createdAt = new Date();
   const result = await addToyCollection.insertOne(addedToy);
   res.send(result);
 });
@@ -91,6 +92,22 @@ app.delete("/addToys/:id", async (req, res) => {
   const result = await addToyCollection.deleteOne(query);
   res.send(result);
 });
+
+// Search from db
+const indexKeys = {name:1};
+const indexOptions= {names:"toyZone"};
+const result = await addToyCollection.createIndex(indexKeys,indexOptions);
+app.get('/searchByToyName/:text', async (req, res) => {
+  const searchText = req.params.text;
+  const result = await addToyCollection.find({
+    name: { $regex: searchText, $options: "i" }
+  }).toArray();
+  res.send(result);
+});
+
+
+
+
 
 
     // // getData from input field and insert db
