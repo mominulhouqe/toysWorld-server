@@ -32,6 +32,18 @@ async function run() {
     await client.connect();
 
     const addToyCollection = client.db("addedToys").collection("addedToys");
+    const addInsertGelleryCollection = client.db('insertToys').collection("insertToys")
+
+
+    // Inserted Gallary section 
+    
+    app.get("/insertToys", async (req, res) => {
+      const cursor = addInsertGelleryCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+  })
+
+
 
     // Get all toys or filter by seller email
     app.get("/addToys", async (req, res) => {
