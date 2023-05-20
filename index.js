@@ -41,32 +41,26 @@ async function run() {
       }
       const result = await addToyCollection
         .find(query)
-        .sort({ createdAt: -1 })
+        .sort({ price: -1 })
         .toArray();
       res.send(result);
     });
 
-    
     // Insert a new toy
     app.post("/addToys", async (req, res) => {
       const addedToy = req.body;
-      addedToy.createdAt = new Date();
+
       const result = await addToyCollection.insertOne(addedToy);
       res.send(result);
     });
 
-
     // Delete a toy by ID
     app.delete("/addToys/:id", async (req, res) => {
       const id = req.params.id;
-      const query = { _id: ObjectId(id) };
+      const query = { _id: new ObjectId(id) };
       const result = await addToyCollection.deleteOne(query);
       res.send(result);
     });
-
-
-
-
 
     // Search from db
     const indexKeys = { name: 1 };
