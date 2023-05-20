@@ -31,41 +31,99 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
 
-    const addToyCollection = client.db("addedToys").collection("addedToys");
+    // const addToyCollection = client.db("addedToys").collection("addedToys");
 
-    // my Toys list
-    app.get("/addToys", async (req, res) => {
-      let query = {};
-      if (req.query?.email) {
-        query = { sellerEmail: req.query.email };
-      }
-      const result = await addToyCollection.find(query).toArray();
-      res.send(result);
-    });
+    // // my Toys list
+    // app.get("/addToys", async (req, res) => {
+    //   let query = {};
+    //   if (req.query?.email) {
+    //     query = { sellerEmail: req.query.email };
+    //   }
+    //   const result = await addToyCollection.find(query).toArray();
+    //   res.send(result);
+    // });
 
-    // send data from db to client
-    app.get("/addToys", async (req, res) => {
-      const cursor = addToyCollection.find().limit(20);
-      const result = await cursor.toArray();
-      res.send(result);
-    });
-
-    // getData from input field and insert db
-    app.post("/addToys", async (req, res) => {
-      const addedToys = req.body;
-
-      const result = await addToyCollection.insertOne(addedToys);
-      res.send(result);
-    });
+    // // send data from db to client
+    // app.get("/addToys", async (req, res) => {
+    //   const cursor = addToyCollection.find().limit(20);
+    //   const result = await cursor.toArray();
+    //   res.send(result);
+    // });
 
 
-    // Delete From Database
-    app.delete("/addToys/:id", async(req, res ) => {
-      const id = req.params.id;
-      const query = {_id: new ObjectId(id)}
-      const result = await addToyCollection.deleteOne(query)
-      res.send(result)
-    })
+// ...
+
+const addToyCollection = client.db("addedToys").collection("addedToys");
+
+// Get all toys or filter by seller email
+app.get("/addToys", async (req, res) => {
+  let query = {};
+  if (req.query?.email) {
+    query = { sellerEmail: req.query.email };
+  }
+  const result = await addToyCollection.find(query).toArray();
+  res.send(result);
+});
+
+// Insert a new toy
+app.post("/addToys", async (req, res) => {
+  const addedToy = req.body;
+  const result = await addToyCollection.insertOne(addedToy);
+  res.send(result);
+});
+
+// Update a toy by ID
+// app.patch("/addToys/:id", async (req, res) => {
+//   const id = req.params.id;
+//   const updatedToy = req.body;
+//   const filter = { _id: ObjectId(id) };
+//   const updateDoc = {
+//     $set: updatedToy
+//   };
+//   const result = await addToyCollection.updateOne(filter, updateDoc);
+//   res.send(result);
+// });
+
+// Delete a toy by ID
+app.delete("/addToys/:id", async (req, res) => {
+  const id = req.params.id;
+  const query = { _id: ObjectId(id) };
+  const result = await addToyCollection.deleteOne(query);
+  res.send(result);
+});
+
+
+    // // getData from input field and insert db
+    // app.post("/addToys", async (req, res) => {
+    //   const addedToys = req.body;
+
+    //   const result = await addToyCollection.insertOne(addedToys);
+    //   res.send(result);
+    // });
+    // // Updated From database
+    // app.patch("/addToys/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const updatedToy = req.body;
+    //   const filter = { _id: new ObjectId(id) };
+    //   const options = {upsert: true}
+    //   console.log(updatedToy);
+    //   const updatedDoc = {
+    //     $set: {
+    //       name: updatingUser.name,
+    //       email: updatingUser.email,
+    //     },
+    //   };
+    //   const result = await addToyCollection.updateOne(filter, updatedDoc, options);
+    //   res.send(result);
+    // });
+
+    // // Delete From Database
+    // app.delete("/addToys/:id", async (req, res) => {
+    //   const id = req.params.id;
+    //   const query = { _id: new ObjectId(id) };
+    //   const result = await addToyCollection.deleteOne(query);
+    //   res.send(result);
+    // });
 
     // const serviceCollection = client.db('carDoctor').collection('services');
     // const bookingCollection = client.db('carDoctor').collection('bookings');
