@@ -77,6 +77,13 @@ async function run() {
 
     // updating
 
+    app.get("/addToys/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await addToyCollection.findOne(query);
+      res.send(result);
+    });
+
     app.put("/addToys/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
@@ -94,6 +101,7 @@ async function run() {
         updateToyData,
         options
       );
+      console.log(result);
       res.send(result);
     });
 
