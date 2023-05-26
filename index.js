@@ -101,7 +101,7 @@ async function run() {
         updateToyData,
         options
       );
-      console.log(result);
+
       res.send(result);
     });
 
@@ -114,9 +114,7 @@ async function run() {
     });
 
     // // Search from db
-    // const indexKeys = { name: 1 };
-    // const indexOptions = { names: "toyZone" };
-    // const result = await addToyCollection.createIndex(indexKeys, indexOptions);
+ 
     app.get("/searchByToyName/:text", async (req, res) => {
       const searchText = req.params.text;
       const result = await addToyCollection
